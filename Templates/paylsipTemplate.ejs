@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payslip</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+            color: #333;
+        }
+
+        h3 {
+            /* font-size: 28px; */
+            color: #007BFF;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            /* border-bottom: 1px solid gray; */
+            padding-bottom: 10px;
+        }
+
+        .header div {
+            width: 48%;
+        }
+
+        .header p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #007BFF;
+            color: white;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .total-row {
+            background-color: #e9f7fd;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .signature {
+            height: 50px;
+            /* border-top: 2px solid #333; */
+            margin-top: 20px;
+            text-align: left;
+            font-size: 14px;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3>Payslip</h3>
+
+        <table class="header" cellspacing="0" cellpadding="8">
+            <tr>
+                <td><strong>Company:</strong></td>
+                <td>SNS IHUB</td>
+            </tr>
+            <tr>
+                <td><strong>Month:</strong></td>
+                <td>
+                    <%= userData.Month %>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Employee Name:</strong></td>
+                <td>
+                    <%= userData['Employee Name'] %>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Designation:</strong></td>
+                <td>
+                    <%= userData.Designation %>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Date of Joining:</strong></td>
+                <td>
+                    <%= userData['Date of join'] %>
+                </td>
+            </tr>
+        </table>
+
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Earnings</th>
+                    <th>Amount (₹)</th>
+                    <th>Deductions</th>
+                    <th>Amount (₹)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Basic Salary</td>
+                    <td>
+                        <%= userData['Basic Salary'] %>
+                    </td>
+                    <td>Tax Deduction</td>
+                    <td>
+                        <%= userData['Professional Tax'] %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>HRA</td>
+                    <td>
+                        <%= userData.HRA %>
+                    </td>
+                    <td>Provident Fund</td>
+                    <td>
+                        <%= userData.PF %>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Other Allowance</td>
+                    <td>
+                        <%= userData['Other allowance'] %>
+                    </td>
+                    <td>Loss of Pay</td>
+                    <td>
+                        <%= userData.LOP %>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>TDS</td>
+                    <td>
+                        <%= userData.TDS %>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Other Deductions</td>
+                    <td>
+                        --
+                    </td>
+                </tr>
+                <tr class="total-row">
+                    <td><strong>Total Earnings</strong></td>
+                    <td><strong>
+                            <%= userData['Total Earnings'] %>
+                        </strong></td>
+                    <td><strong>Total Deductions</strong></td>
+                    <td><strong>
+                            <%= userData['Total Deductions'] %>
+                        </strong></td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="3"><strong>Net Salary</strong></td>
+                    <td><strong>
+                            <%= userData['Net Salary'] %>
+                        </strong></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- <div class="footer">
+            <div>
+                <p>Authorized Signatory</p>
+                <div class="signature">(Signature)</div>
+            </div>
+            <div>
+                <p>Employee's Signature</p>
+                <div class="signature"> <%= userData['Employee Name'] %></div>
+            </div>
+        </div> -->
+    </div>
+</body>
+
+</html>
