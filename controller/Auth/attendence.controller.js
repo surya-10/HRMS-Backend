@@ -28,13 +28,13 @@ const checkApprovedLeave = async (userId, date) => {
         // Find any approved leave request for the given date
         const approvedLeave = timeoff.leave_requests.find(request => {
             if (request.status_name !== "Approved") return false;
-            
+
             const leaveDate = new Date(request.leave_date[0].date);
             const checkDate = new Date(date);
-            
+
             return leaveDate.getDate() === checkDate.getDate() &&
-                   leaveDate.getMonth() === checkDate.getMonth() &&
-                   leaveDate.getFullYear() === checkDate.getFullYear();
+                leaveDate.getMonth() === checkDate.getMonth() &&
+                leaveDate.getFullYear() === checkDate.getFullYear();
         });
 
         return approvedLeave;
@@ -73,7 +73,7 @@ exports.createCheckIn = async (req, res) => {
                     // Half day leave - check timing
                     const isFirstHalf = approvedLeave.leave_date[0].start_date === "9 AM";
                     const currentHour = new Date().getHours();
-                    
+
                     if (isFirstHalf && currentHour < 14) { // Before 2 PM
                         return res.status(400).json({ message: "Cannot check-in during approved first half leave" });
                     } else if (!isFirstHalf && currentHour >= 14) { // After 2 PM
@@ -99,7 +99,7 @@ exports.createCheckIn = async (req, res) => {
                     (entry) => entry.date.toISOString().split("T")[0] === parsedDate.toISOString().split("T")[0]
                 );
                 console.log(dateExists)
-                return res.status(201).json({ message: "Check-in created successfully.", data:[dateExists] });
+                return res.status(201).json({ message: "Check-in created successfully.", data: [dateExists] });
             }
 
             const dateExists = attendanceRecord.attendance.find(
@@ -277,14 +277,65 @@ function calculateWorkingHours(startTime, endTime) {
 }
 
 exports.getAllCheckIn = async (req, res) => {
+    console.log("mnagwr", 280)
     try {
         const { managerId } = req.params;
 
         const user = await userInfo.findOne({ _id: managerId, is_deleted: false }, { password: 0 }).populate("role");
-        if (!user || user.role?.role_value !== "manager") {
+        if (user.role?.role_value !== "manager" && user.role?.role_value !== "ad") {
+            return res.status(400).json({ message: "You are not a manager or AD" });
+        }
+        if (user.role?.role_value == "ad") {
+            const allUsers = await userInfo.find({}, { password: 0 });
+            const userIds = allUsers.map((data) => data._id);
+            // console.log(userIds)
+
+            if (userIds.length === 0) {
+                return res.status(200).json({ message: "No data found" });
+            }
+            const attendanceData = await loginInInfo.find({
+                user_id: { $in: userIds }
+            });
+            // console.log(attendanceData)
+
+            return res.status(200).json({ message: "Data retrieved", data: attendanceData });
+        }
+
+        else if (user.role?.role_value == "manager") {
+            const allUsers = await userInfo.find({ manager_id: user._id }, { password: 0 });
+            const userIds = allUsers.map((data) => data._id);
+            // console.log(userIds)
+
+            if (userIds.length === 0) {
+                return res.status(200).json({ message: "No data found" });
+            }
+            const attendanceData = await loginInInfo.find({
+                user_id: { $in: userIds }
+            });
+            // console.log(attendanceData)
+
+            return res.status(200).json({ message: "Data retrieved", data: attendanceData });
+        }
+
+    }
+    catch (error) {
+        console.error("Error retrieving check-in:", error);
+        return res.status(500).json({
+            status: 500,
+            error: error.message,
+            message: "Error retrieving check-in"
+        });
+    }
+}
+exports.getAllCheckInAd = async (req, res) => {
+    try {
+        const { managerId } = req.params;
+
+        const user = await userInfo.findOne({ _id: managerId, is_deleted: false }, { password: 0 }).populate("role");
+        if (!user || user.role?.role_value !== "ad") {
             return res.status(400).json({ message: "You are not a manager" });
         }
-        const allUsers = await userInfo.find({ manager_id: managerId }, { password: 0 });
+        const allUsers = await userInfo.find({}, { password: 0 });
         const userIds = allUsers.map((data) => data._id);
         // console.log(userIds)
 
@@ -450,7 +501,7 @@ exports.getcheckInHistory = async (req, res) => {
         }
         let attendanceRecord = await loginInInfo.findOne({ user_id: id });
         if (!attendanceRecord) {
-            return res.status(200).json({ message: "Login history not found", ok:false });
+            return res.status(200).json({ message: "Login history not found", ok: false });
         }
         const date = new Date().getMonth();
         const permissions = await permissionInfo.find();
@@ -459,7 +510,7 @@ exports.getcheckInHistory = async (req, res) => {
         // console.log(leaves.length, "leaves")
         // console.log(attendanceRecord)
 
-        return res.status(200).json({ data: attendanceRecord.attendance, month: findWorkingDays, permissions, leaves, ok:true })
+        return res.status(200).json({ data: attendanceRecord.attendance, month: findWorkingDays, permissions, leaves, ok: true })
     } catch (error) {
         return res.status(500).json({
             status: 500,

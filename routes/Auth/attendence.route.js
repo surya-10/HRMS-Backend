@@ -11,6 +11,7 @@ module.exports = (app) => {
     router.get("/get-allAttendance", authBearer, asyncHandler(attendence.getAllAttendance))
     router.get("/get-checkin/:id/:date", authBearer, asyncHandler(attendence.getByDate));
     router.get("/get-all-checkin/:managerId", authBearer, asyncHandler(attendence.getAllCheckIn));
+    router.get("/get-all-checkin/:managerId", authBearer, asyncHandler(attendence.getAllCheckIn));
     router.get("/get-all-checkin-admin/:adminId", authBearer, asyncHandler(attendence.getAllCheckInAdmin));
     router.get("/get-all-data/:adminId", authBearer, asyncHandler(attendence.getAllCheckInData));
 
