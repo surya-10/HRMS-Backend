@@ -7,7 +7,7 @@ module.exports = (app) => {
     router.post("/add-break/:userId", authBearer, asyncHandler(breakDetails.addBreaks));
     router.get("/get-breaks/:userId/:date", authBearer, asyncHandler(breakDetails.getBreakByDate));
     router.get("/get-all-breaks/:userId", authBearer, asyncHandler(breakDetails.getAllBreaks));
-
+    router.get("/get-today-breaks/:managerId", authBearer, asyncHandler(breakDetails.getTodayBreaksForAllEmployees));
   
     app.use("/api/routes/break-details", router);
   };

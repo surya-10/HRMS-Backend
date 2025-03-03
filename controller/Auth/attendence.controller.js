@@ -98,7 +98,7 @@ exports.createCheckIn = async (req, res) => {
                 const dateExists = attendanceRecord.attendance.find(
                     (entry) => entry.date.toISOString().split("T")[0] === parsedDate.toISOString().split("T")[0]
                 );
-                console.log(dateExists)
+                // console.log(dateExists)
                 return res.status(201).json({ message: "Check-in created successfully.", data: [dateExists] });
             }
 
@@ -124,7 +124,7 @@ exports.createCheckIn = async (req, res) => {
         }
 
         else if (type == "checkOut") {
-            console.log(type, date, startTime, "data ");
+            // console.log(type, date, startTime, "data ");
             // if (!moment(date, "YYYY-MM-DD", true).isValid()) {
             //     return res.status(400).json({ message: "Invalid date format. Use 'YYYY-MM-DD'." });
             // }
@@ -173,7 +173,7 @@ exports.createCheckIn = async (req, res) => {
                     // First get the employee details
                     const employee = await userInfo.findById(id);
                     if (!employee) {
-                        console.log("Employee not found:", id);
+                        // console.log("Employee not found:", id);
                         throw new Error("Employee not found");
                     }
 
@@ -243,7 +243,7 @@ exports.createCheckIn = async (req, res) => {
 
                     // Send email
                     await transporter.sendMail(mailOptions);
-                    console.log(`Email sent successfully to manager: ${manager.email}`);
+                    // console.log(`Email sent successfully to manager: ${manager.email}`);
 
                 } catch (emailError) {
                     console.error("Error sending email:", emailError);
@@ -277,7 +277,7 @@ function calculateWorkingHours(startTime, endTime) {
 }
 
 exports.getAllCheckIn = async (req, res) => {
-    console.log("mnagwr", 280)
+    // console.log("mnagwr", 280)
     try {
         const { managerId } = req.params;
 
@@ -361,7 +361,7 @@ exports.getAllCheckInAd = async (req, res) => {
 exports.getAllCheckInAdmin = async (req, res) => {
     try {
         const { adminId } = req.params;
-        console.log(adminId)
+        // console.log(adminId)
 
         const user = await userInfo.findOne({ _id: adminId, is_deleted: false }, { password: 0 }).populate("role");
         if (!user || user.role?.role_value !== "admin") {
@@ -369,7 +369,7 @@ exports.getAllCheckInAdmin = async (req, res) => {
         }
         const allUsers = await userInfo.find({}, { password: 0 });
         const userIds = allUsers.map((data) => data._id);
-        console.log(userIds)
+        // console.log(userIds)
 
         if (userIds.length === 0) {
             return res.status(200).json({ message: "No data found" });
@@ -392,7 +392,7 @@ exports.getAllCheckInAdmin = async (req, res) => {
 exports.getAllCheckInData = async (req, res) => {
     try {
         const { adminId } = req.params;
-        console.log(adminId);
+        // console.log(adminId);
 
         const user = await userInfo.findOne({ _id: adminId, is_deleted: false }, { password: 0 }).populate("role");
         if (!user || user.role?.role_value !== "admin") {
@@ -410,7 +410,7 @@ exports.getAllCheckInData = async (req, res) => {
         const formattedDateWithTime = `${formattedDate}T00:00:00.000+00:00`;
 
 
-        console.log(formattedDateWithTime, "formattedDateWithTime", formattedDate);
+        // console.log(formattedDateWithTime, "formattedDateWithTime", formattedDate);
 
         const attendanceData = await loginInInfo.find({
             user_id: { $in: userIds }

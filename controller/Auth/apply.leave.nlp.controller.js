@@ -265,11 +265,11 @@ exports.getDateAndReason = async (req, res) => {
                 return res.status(400).json({message:"Provide reason to apply permission"})
             }
             const result = extractDateTime(data);
-            console.log(result.date)
+            // console.log(result.date)
             const isHolidayAleady = availableHolidays.some(holiday => {
                 const holidayParts = holiday.date.split('-'); // ["07", "12", "2025"]
                 const formattedHolidayDate = `${holidayParts[2]}-${holidayParts[1]}-${holidayParts[0]}`; // "2025-12-07"
-                console.log(result.date == formattedHolidayDate, 274)
+                // console.log(result.date == formattedHolidayDate, 274)
                 if(result.date == formattedHolidayDate){
                     return true;
                 }
@@ -333,8 +333,8 @@ exports.getDateAndReason = async (req, res) => {
         const extractedDates = chronoResults.map(date => {
             const startDate = date.start.date();
             const endDate = date.end ? date.end.date() : date.start.date();
-            console.log(startDate, endDate, 338)
-            console.log(data)
+            // console.log(startDate, endDate, 338)
+            // console.log(data)
           
 
             // Format dates in YYYY-MM-DD format for storage
@@ -348,7 +348,7 @@ exports.getDateAndReason = async (req, res) => {
             const formattedStartDate = formatDate(startDate);
             const formattedEndDate = formatDate(endDate);
             let isHolidayFound = false;
-            console.log(formattedStartDate, formattedEndDate, 352)
+            // console.log(formattedStartDate, formattedEndDate, 352)
             
             for (const holiday of availableHolidays) {
                 const holidayParts = holiday.date.split('-'); // ["07", "12", "2025"]
